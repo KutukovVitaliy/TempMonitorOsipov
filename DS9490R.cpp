@@ -78,5 +78,6 @@ std::map<std::string, float> DS9490R::GetSensorsTemperature(){
             }
         }
     }
+    OW_finish();
     return result;
 }

@@ -74,7 +74,7 @@ std::map<std::string, float> DS9490R::GetSensorsTemperature(){
             OW_get(tmpName.c_str(),&buf,&s);
             if(s > 0){
                 float temp = std::atof(buf);
-                result.insert(std::make_pair(it->first, temp));
+                result.insert(std::make_pair(it->second, temp));
             }
         }
     }

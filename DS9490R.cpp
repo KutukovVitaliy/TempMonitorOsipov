@@ -22,6 +22,13 @@ DS9490R::DS9490R(std::string fileName) {
     }
 
 }
+std::vector<std::string> DS9490R::GetCustomSensorsName(){
+    std::vector<std::string> customSensName;
+    for(auto el : sensorsName){
+        customSensName.emplace_back(el.second);
+    }
+    return customSensName;
+}
 DS9490R::~DS9490R() {
 
 }
@@ -67,7 +74,7 @@ std::map<std::string, float> DS9490R::GetSensorsTemperature(){
     size_t s ;
     if(sensorsName.size() != 0){
         std::map<std::string, std::string>::iterator it;
-        if(OW_init("u#") != 0) return result;
+        if(OW_init("u") != 0) return result;
         OW_set_error_print("2");
         for(it = sensorsName.begin(); it != sensorsName.end(); ++it){
             tmpName = it->first + "/temperature9";

@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <vector>
 
 class DS9490R {
     std::string paramFileName;
@@ -16,6 +17,7 @@ class DS9490R {
 public:
     static int CreateParamFile(std::string fullFileName);
     std::map<std::string, float> GetSensorsTemperature();
+    std::vector<std::string> GetCustomSensorsName();
     DS9490R(std::string fileName);
     ~DS9490R();
 };

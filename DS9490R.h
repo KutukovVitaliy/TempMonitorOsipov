@@ -13,12 +13,12 @@
 class DS9490R {
     std::string paramFileName;
     std::map<std::string,std::string> sensorsName;
-
+    bool error = false;
 public:
-    static int CreateParamFile(std::string fullFileName);
+    int CreateParamFile(const std::string& fullFileName);
     std::map<std::string, float> GetSensorsTemperature();
     std::vector<std::string> GetCustomSensorsName();
-    DS9490R(std::string fileName);
+    explicit DS9490R(const std::string& fileName);
     ~DS9490R();
 };
 

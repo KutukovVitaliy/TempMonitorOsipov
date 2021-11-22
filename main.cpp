@@ -61,7 +61,7 @@ int main() {
     }
     DS9490R myTempSensors("/home/kvitadmin/tmp/param_file.txt");
     std::vector<std::string> roomNames = myTempSensors.GetCustomSensorsName();
-    for(auto el : roomNames){
+    for(const auto& el : roomNames){
         masRooms.insert(std::make_pair(el, 0));
     }
     SmsModem myModem(pathToModemDir);
@@ -96,7 +96,7 @@ int main() {
                     myModem.sendSmsMessage(telNumber,tmpstring);
                 }
                 else if(el.find("temp") != std::string::npos){
-                    masTemp = myTempSensors.GetSensorsTemperature();
+                    masTemp = std::move(myTempSensors.GetSensorsTemperature());
                     std::string tmpString;
                     if(!masTemp.empty()){
 
@@ -124,10 +124,10 @@ int main() {
         }
 
         if(monitor){
-            masTemp = myTempSensors.GetSensorsTemperature();
+            masTemp = std::move(myTempSensors.GetSensorsTemperature());
             if(!masTemp.empty()){
                 for(const auto& el : masTemp) {
-                    std::cout << el.first << "--" << el.second << std::endl;
+                    //std::cout << el.first << "--" << el.second << std::endl;
                     if(el.first == "ul"){
                         if((static_cast<int>(el.second) <= minStreetT) && masRooms.find(el.first)->second == 0){
                             masRooms.find(el.first)->second = 1;//надо отправить сообщение об аварии
@@ -146,19 +146,21 @@ int main() {
                     }
                 }
             }
+            masTemp.clear();
             ////////////////////////////////
-            for(auto el : masRooms){
-                if(el.second == 1){
-                    std::string mes = "Alarm! " + el.first + " Temperature = " + std::to_string(static_cast<int>(masTemp.find(el.first)->second));
+            std::map<std::string,int>::iterator el;
+            for( el = masRooms.begin(); el != masRooms.end(); el++){
+                if(el->second == 1){
+                    std::string mes = "Alarm! " + el->first + " Temperature = " + std::to_string(static_cast<int>(masTemp.find(el->first)->second));
                     if(myModem.sendSmsMessage(telNumber,mes )){
-                        el.second = 2;
+                        el->second = 2;
                     }
 
                 }
-                else if(el.second == 3){
-                    std::string mes = "Alarm canceled! " + el.first + " Temperature = " + std::to_string(static_cast<int>(masTemp.find(el.first)->second));
+                else if(el->second == 3){
+                    std::string mes = "Alarm canceled! " + el->first + " Temperature = " + std::to_string(static_cast<int>(masTemp.find(el->first)->second));
                     if(myModem.sendSmsMessage(telNumber,mes )){
-                        el.second = 0;
+                        el->second = 0;
                     }
                 }
             }
